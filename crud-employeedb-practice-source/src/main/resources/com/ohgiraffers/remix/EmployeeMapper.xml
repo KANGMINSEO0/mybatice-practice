@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.remix.EmployeeMapper">
+    <resultMap id="employeeResultMap" type="com.ohgiraffers.remix.EmployeeDTO">
+        <id property="id" column="EMP_ID"/>
+        <result property="name" column="EMP_NAME"/>
+        <result property="no" column="EMP_NO"/>
+        <result property="email" column="EMAIL"/>
+        <result property="phone" column="PHONE"/>
+        <result property="deptCode" column="DEPT_CODE"/>
+        <result property="jobCode" column="JOB_CODE"/>
+        <result property="salLevel" column="SAL_LEVEL"/>
+        <result property="salary" column="SALARY"/>
+        <result property="bonus" column="BONUS"/>
+        <result property="managerId" column="MANAGER_ID"/>
+        <result property="hireDate" column="HIRE_DATE"/>
+        <result property="entDate" column="ENT_DATE"/>
+        <result property="entYn" column="ENT_YN"/>
+    </resultMap>
+
+    <select id="selectAllEmployee" resultMap="employeeResultMap">
+        SELECT
+               EMP_ID
+             , EMP_NAME
+             , EMP_NO
+             , EMAIL
+             , PHONE
+             , DEPT_CODE
+             , JOB_CODE
+             , SAL_LEVEL
+             , SALARY
+             , BONUS
+             , MANAGER_ID
+             , HIRE_DATE
+             , ENT_DATE
+             , ENT_YN
+<!--         WHERE ENT_YN = 'N'-->
+          FROM EMPLOYEE
+         ORDER BY EMP_ID
+    </select>
+
+    <select id="selectEmployeeById" parameterType="_int" resultMap="employeeResultMap">
+        SELECT
+               EMP_ID
+             , EMP_NAME
+             , EMP_NO
+             , EMAIL
+             , PHONE
+             , DEPT_CODE
+             , JOB_CODE
+             , SAL_LEVEL
+             , SALARY
+             , BONUS
+             , MANAGER_ID
+             , HIRE_DATE
+             , ENT_DATE
+             , ENT_YN
+          FROM EMPLOYEE
+         WHERE EMP_ID = #{ id }
+    </select>
+
+    <insert id="insertEmployee" parameterType="com.ohgiraffers.remix.EmployeeDTO">
+        INSERT
+          INTO EMPLOYEE
+        (
+            EMP_NAME
+          , EMP_NO
+          , EMAIL
+          , PHONE
+          , DEPT_CODE
+          , JOB_CODE
+          , SAL_LEVEL
+          , SALARY
+          , BONUS
+          , MANAGER_ID
+          , HIRE_DATE
+          , ENT_DATE
+          , ENT_YN
+        )
+        VALUES
+        (
+            #{ name }
+          , #{ no }
+          , null
+          , null
+          , null
+          , #{ jobCode }
+          , #{ salLevel }
+          , null
+          , null
+          , null
+          , #{ hireDate }
+          , null
+          , 'N'
+        )
+    </insert>
+
+    <update id="updateEmployee" parameterType="com.ohgiraffers.remix.EmployeeDTO">
+        UPDATE EMPLOYEE
+           SET EMP_NAME = #{ name }
+             , EMAIL = #{ email }
+             , PHONE = #{ phone }
+             , JOB_CODE = #{ jobCode }
+             , SAL_LEVEL = #{ salLevel }
+         WHERE EMP_ID = #{ id }
+    </update>
+    
+    <delete id="deleteEmployee" parameterType="_int">
+        DELETE
+          FROM EMPLOYEE
+         WHERE EMP_ID = #{ id }
+    </delete>
+</mapper>
