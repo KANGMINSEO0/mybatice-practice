@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.remix.StoreMapper">
+    <resultMap id="itemResultMap" type="com.ohgiraffers.remix.ItemDTO">
+        <id property="itemId" column="ITEM_ID"/>
+        <result property="itemName" column="ITEM_NAME"/>
+        <result property="itemPrice" column="ITEM_PRICE"/>
+        <result property="itemAmount" column="ITEM_AMOUNT"/>
+        <result property="itemDate" column="ITEM_DATE"/>
+    </resultMap>
+
+    <resultMap id="userResultMap" type="com.ohgiraffers.remix.UserDTO">
+        <id property="userId" column="USER_ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="userPhone" column="USER_PHONE"/>
+        <result property="buyDate" column="BUY_DATE"/>
+        <result property="buyAmount" column="BUY_AMOUNT"/>
+        <result property="itemId" column="ITEM_ID"/>
+    </resultMap>
+
+    <resultMap id="UserAndItemResultMap" type="com.ohgiraffers.remix.UserAndItemDTO">
+        <id property="userId" column="USER_ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="userPhone" column="USER_PHONE"/>
+        <result property="buyDate" column="BUY_DATE"/>
+        <result property="buyAmount" column="BUY_AMOUNT"/>
+        <association property="item" javaType="com.ohgiraffers.remix.ItemDTO">
+            <id property="itemId" column="ITEM_ID"/>
+            <result property="itemName" column="ITEM_NAME"/>
+            <result property="itemPrice" column="ITEM_PRICE"/>
+            <result property="itemAmount" column="ITEM_AMOUNT"/>
+            <result property="itemDate" column="ITEM_DATE"/>
+        </association>
+    </resultMap>
+
+    <select id="selectUserByItemId" resultMap="userResultMap">
+        SELECT
+               USER_ID
+             , USER_NAME
+             , USER_PHONE
+             , BUY_DATE
+             , BUY_AMOUNT
+             , ITEM_ID
+          FROM USER
+         WHERE ITEM_ID = #{ itemId }
+    </select>
+
+    <select id="selectAllItem" resultMap="itemResultMap">
+        SELECT
+               ITEM_ID
+             , ITEM_NAME
+             , ITEM_PRICE
+             , ITEM_AMOUNT
+             , ITEM_DATE
+          FROM ITEM
+    </select>
+
+    <select id="selectItemById" parameterType="_int" resultMap="itemResultMap">
+        SELECT
+               ITEM_ID
+             , ITEM_NAME
+             , ITEM_PRICE
+             , ITEM_AMOUNT
+             , ITEM_DATE
+          FROM ITEM
+         WHERE ITEM_ID = #{ itemId }
+    </select>
+    
+    <insert id="insertItem" parameterType="com.ohgiraffers.remix.ItemDTO">
+        INSERT
+          INTO ITEM
+        (
+            ITEM_ID
+          , ITEM_NAME
+          , ITEM_PRICE
+          , ITEM_AMOUNT
+          , ITEM_DATE
+        )
+        SELECT
+            COALESCE(MAX(ITEM_ID), 0) + 1
+          , #{ itemName }
+          , #{ itemPrice }
+          , #{ itemAmount }
+          , #{ itemDate }
+          FROM ITEM
+    </insert>
+
+    <update id="updateItem" parameterType="com.ohgiraffers.remix.ItemDTO">
+        UPDATE ITEM
+           SET ITEM_NAME = #{ itemName }
+             , ITEM_PRICE = #{ itemPrice }
+             , ITEM_AMOUNT = #{ itemAmount }
+         WHERE ITEM_ID = #{ itemId }
+    </update>
+
+    <delete id="deleteItem" parameterType="_int">
+        DELETE
+          FROM ITEM
+         WHERE ITEM_ID = #{ itemId }
+    </delete>
+</mapper>
